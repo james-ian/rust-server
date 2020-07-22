@@ -39,17 +39,7 @@ resource "aws_instance" "testbox" {
   instance_type   = "t2.2xlarge"
   key_name        = aws_key_pair.jm_alien.key_name
   security_groups = [aws_security_group.allow_ssh_rust.name]
-  user_data       = <<EOF
-#!/bin/bash
-yum update -y
-yum install -y --setopt=protected_multilib=false glibc.i686 libstdc++.i686
-useradd rust
-mkdir /home/rust/steamcmd; cd /home/rust/steamcmd
-wget https://steamcdn-a.akamaihd.net/client/installer/steamcmd_linux.tar.gz
-tar zxf steamcmd_linux.tar.gz
-chown -R rust:rust /home/rust/steamcmd
-su rust -c "./steamcmd.sh +login anonymous +force_install_dir /home/rust/rustserver +app_update 258550 +quit"
-EOF
+  user_data       = file("scripts/install-server")
 }
 
 # SSH public key for ec2-user
