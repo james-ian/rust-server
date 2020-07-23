@@ -6,12 +6,11 @@ out/terraform.log:
 	terraform init
 	terraform apply -no-color -auto-approve | tee out/terraform.log
 
-destroy:
+destroy: clean
 	terraform destroy -auto-approve
 
-clean: destroy
+clean:
 	rm -rf out
-	rm -rf terraform.out
 
 ssh:
 	ssh \

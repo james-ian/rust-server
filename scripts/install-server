@@ -9,11 +9,20 @@ chown -R rust:rust /home/rust/steamcmd
 su rust -c "./steamcmd.sh +login anonymous +force_install_dir /home/rust/rustserver +app_update 258550 +quit"
 cd /home/rust/rustserver
 
+rcon_pw=$(aws secretsmanager \
+get-secret-value \
+--secret-id rcon_pw \
+--query "SecretString" \
+--output text \
+--region us-east-1)
+
 cat > /home/rust/start_server <<EOF
 cd /home/rust/rustserver
 nohup \
  ./RustDedicated \
  -batchmode \
+ +rcon.password "$rcon_pw" \
+ +rcon.port 28016 \
  +server.port 28015 \
  +server.level "Procedural Map" \
  +server.seed 1234 \
