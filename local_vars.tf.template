@@ -1,0 +1,9 @@
+variable "rust_server_pubkey" {
+  type = string
+  default = "put_your_public_key_here"
+}
+
+variable "terraform_s3_bucket" {
+  type = string
+  default = "put_your_s3_bucket_name_here"
+}

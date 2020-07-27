@@ -3,6 +3,23 @@ provider "aws" {
  region = "us-east-1"
 }
 
+terraform {
+  backend "s3" {
+    bucket = var.terraform_s3_bucket
+    key    = "terraform.state"
+    region = "us-east-1"
+  }
+}
+
+resource "aws_s3_bucket" "terraform" {
+  bucket = terraform_s3_bucket
+  acl    = "private"
+  region = "us-east-1"
+  versioning {
+    enabled = true
+  }
+}
+
 resource "aws_security_group" "allow_all" {
   ingress {
     from_port = 0
@@ -99,17 +116,17 @@ resource "aws_iam_instance_profile" "rcon_readonly_profile" {
 resource "aws_instance" "rustserver" {
   ami             = data.aws_ami.amazon-linux-2.id
   instance_type   = "t2.2xlarge"
-  key_name        = aws_key_pair.jm_alien.key_name
+  key_name        = aws_key_pair.rustserver_access.key_name
   security_groups = [aws_security_group.allow_all.name]
-  user_data       = file("scripts/install-server")
+  #user_data       = file("scripts/install-server")
   iam_instance_profile = aws_iam_instance_profile.rcon_readonly_profile.name
 }
 
 # SSH public key for ec2-user
 
-resource "aws_key_pair" "jm_alien" {
-  key_name   = "jm_alien"
-  public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDTurXRxVj0zBC4nSMY//w+G3a4RSIvU35tcAFJy4wq2y+v75xN9vOTk3BJm6gj14gOFFwl6boQ+zNkTMTebC/GF2JRU8/IzQcgFB/EMZhRU4KWwXhSccyFzk6XfKkg2UwSmY4bB/uLjq7e/d1xMOldFgrdzKPa/+FrDPhdsf8uerB6/VyBItBdLRZAqzw0sSBnxuRP9eS+UWtHA35tB0u8umF5oMVnN1IWE8xSrZorwiIujGYiGwC6GQFswqJk7GJvTQWxR3CVBMMmpGEXiiBCaeZLGgNR+cTbwW+6c3mhusG682KN7D6GMPy/bigUgBvv298TFHUUizfCeEWuU51z james@alien"
+resource "aws_key_pair" "rustserver_access" {
+  key_name   = "rustserver_access"
+  public_key = var.rust_server_pubkey
 }
 
 

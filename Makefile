@@ -3,7 +3,6 @@ out/ip: out/terraform.log
 
 out/terraform.log:
 	mkdir -p out
-	terraform init
 	terraform apply -no-color -auto-approve | tee out/terraform.log
 
 destroy: clean
@@ -12,6 +11,8 @@ destroy: clean
 clean:
 	rm -rf out
 
+status:
+	scripts/inspect-acct
 ssh:
 	ssh \
 		-oStrictHostKeyChecking=false \

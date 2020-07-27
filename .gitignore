@@ -2,3 +2,4 @@
 terraform.*
 out
 secret_vars.tf
+local_vars.tf
