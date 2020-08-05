@@ -1,34 +1,41 @@
 #out/ip: out/terraform.log
-ip:
+
+out: terraform.tfstate
+	mkdir -p out
+	jq --raw-output ' .resources | map(select(.type == "aws_instance"))[0].instances[0].attributes.public_ip' terraform.tfstate > out/ip
+	jq --raw-output '.resources | map(select(.type == "aws_instance")) | .[0].instances[0].attributes.id' terraform.tfstate > out/id
+
+terraform.tfstate:
 	terraform init
 	terraform apply -auto-approve
-	jq --raw-output ' .resources | map(select(.type == "aws_instance"))[0].instances[0].attributes.public_ip' terraform.tfstate > ip
 
-#out/terraform.log:
-#	mkdir -p out
-#	terraform init
-#	terraform apply -no-color -auto-approve | tee out/terraform.log
 
 destroy: clean
 	terraform destroy -auto-approve
 
 clean:
-	rm -rf ip
+	rm -rf out
 
-distclean:
-	rm -rf .terraform terraform.*
+cleanall: clean
+	rm -rf .terraform terraform.tfstate *.stackdump
 
 ssh:
 	ssh \
 		-oStrictHostKeyChecking=false \
 		-oUserKnownHostsFile=/dev/null \
 		-l ec2-user \
-		$(shell cat ip)
+		`cat out/ip`
 
 tail:
 	ssh \
 		-oStrictHostKeyChecking=false \
 		-oUserKnownHostsFile=/dev/null \
 		-l ec2-user \
-		$(shell cat ip) \
+		`cat out/ip` \
 		sudo tail -n 100 -f /home/rust/rustserver/nohup.out
+
+start: out
+	aws ec2 start-instances --instance-ids `cat out/id`
+
+stop: out
+	aws ec2 stop-instances --instance-ids `cat out/id`
