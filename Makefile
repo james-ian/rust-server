@@ -23,12 +23,12 @@ ssh:
 		-oStrictHostKeyChecking=false \
 		-oUserKnownHostsFile=/dev/null \
 		-l ec2-user \
-		$(shell cat out/ip)
+		$(shell cat ip)
 
 tail:
 	ssh \
 		-oStrictHostKeyChecking=false \
 		-oUserKnownHostsFile=/dev/null \
 		-l ec2-user \
-		$(shell cat out/ip) \
+		$(shell cat ip) \
 		sudo tail -n 100 -f /home/rust/rustserver/nohup.out
