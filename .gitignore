@@ -2,3 +2,5 @@
 terraform.*
 out
 secret_vars.tf
+ip
+*.stackdump

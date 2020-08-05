@@ -113,6 +113,6 @@ resource "aws_key_pair" "jm_alien" {
 }
 
 
-output "ip" {
-  value = aws_instance.rustserver.public_ip
-}
+#output "ip" {
+#  value = aws_instance.rustserver.public_ip
+#}
