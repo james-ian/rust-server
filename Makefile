@@ -2,12 +2,10 @@
 
 out: terraform.tfstate
 	mkdir -p out
-	jq --raw-output ' .resources | map(select(.type == "aws_instance"))[0].instances[0].attributes.public_ip' terraform.tfstate > out/ip
-	jq --raw-output '.resources | map(select(.type == "aws_instance")) | .[0].instances[0].attributes.id' terraform.tfstate > out/id
-
-terraform.tfstate:
 	terraform init
 	terraform apply -auto-approve
+	jq --raw-output ' .resources | map(select(.type == "aws_instance"))[0].instances[0].attributes.public_ip' terraform.tfstate > out/ip
+	jq --raw-output '.resources | map(select(.type == "aws_instance")) | .[0].instances[0].attributes.id' terraform.tfstate > out/id
 
 
 destroy: clean
@@ -39,3 +37,6 @@ start: out
 
 stop: out
 	aws ec2 stop-instances --instance-ids `cat out/id`
+
+status:
+	scripts/inspect-acct

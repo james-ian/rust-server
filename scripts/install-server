@@ -6,6 +6,10 @@ mkdir /home/rust/steamcmd; cd /home/rust/steamcmd
 wget https://steamcdn-a.akamaihd.net/client/installer/steamcmd_linux.tar.gz
 tar zxf steamcmd_linux.tar.gz
 chown -R rust:rust /home/rust/steamcmd
+mkdir -p /home/rust/rustserver/server/server1/cfg
+echo ownerid 76561198002558771 >> /home/rust/rustserver/server/server1/cfg/users.cfg
+chown -R rust:rust /home/rust/rustserver
+
 su rust -c "./steamcmd.sh +login anonymous +force_install_dir /home/rust/rustserver +app_update 258550 +quit"
 cd /home/rust/rustserver
 
