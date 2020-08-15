@@ -13,3 +13,15 @@ make tail
 
 # destroy server
 make destroy
+
+# rust console commands
+connect server:port
+god true
+noclip
+env.time 9
+spawn minicopter.entity
+spawn rhib
+spawn scientist
+teleportpos 0,0,0
+printpos
+heal

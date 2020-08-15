@@ -3,3 +3,4 @@ terraform.*
 out
 secret_vars.tf
 *.stackdump
+*.swp
